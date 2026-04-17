@@ -1,0 +1,583 @@
+/* =========================================================
+   dashboard.css — Resident Dashboard Styles
+   Light/dark mode via CSS variables.
+   Toggle by adding/removing "dark" class on <body>.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap');
+
+/* ---------- Light Mode Tokens ---------- */
+:root {
+  --font: 'Sora', sans-serif;
+
+  --bg-page:        #f0f4ff;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f7f9ff;
+  --bg-navbar:      #ffffff;
+  --bg-stat:        #f0f4ff;
+  --bg-popup:       #ffffff;
+
+  --text-primary:   #1a1a2e;
+  --text-secondary: #5a6a8a;
+  --text-muted:     #9aaac0;
+
+  --brand-blue:     #005bea;
+  --brand-light:    #00c6fb;
+  --brand-grad:     linear-gradient(135deg, #00c6fb, #005bea);
+
+  --status-open:           #3b82f6;
+  --status-open-bg:        #eff6ff;
+  --status-assigned:       #f59e0b;
+  --status-assigned-bg:    #fffbeb;
+  --status-inprogress:     #f97316;
+  --status-inprogress-bg:  #fff7ed;
+  --status-closed:         #22c55e;
+  --status-closed-bg:      #f0fdf4;
+
+  --border:       #e2e8f0;
+  --shadow-sm:    0 2px 8px rgba(0,91,234,0.08);
+  --shadow-md:    0 4px 20px rgba(0,91,234,0.12);
+  --shadow-lg:    0 8px 32px rgba(0,0,0,0.15);
+  --radius-sm:    10px;
+  --radius-md:    16px;
+  --radius-lg:    24px;
+  --navbar-height: 64px;
+}
+
+/* ---------- Dark Mode Tokens ---------- */
+body.dark {
+  --bg-page:       #0f1729;
+  --bg-card:       #1a2540;
+  --bg-card-hover: #1f2d4d;
+  --bg-navbar:     #111e36;
+  --bg-stat:       #1f2d4d;
+  --bg-popup:      #1a2540;
+
+  --text-primary:   #e8edf5;
+  --text-secondary: #8a9bc0;
+  --text-muted:     #4a5a7a;
+
+  --border:      #253050;
+  --shadow-sm:   0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md:   0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.55);
+
+  --status-open-bg:       #1e3a5f;
+  --status-assigned-bg:   #3d2e00;
+  --status-inprogress-bg: #3d1f00;
+  --status-closed-bg:     #0d2e1a;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+  overscroll-behavior: none;
+}
+
+/* =====================================================
+   NAVBAR
+   ===================================================== */
+.dash-navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--navbar-height);
+  background: var(--bg-navbar);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 100;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.dash-navbar-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: var(--brand-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dash-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Generic icon button */
+.dash-icon-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--bg-stat);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.dash-icon-btn:hover,
+.dash-icon-btn.active {
+  background: var(--brand-blue);
+  color: #fff;
+  border-color: var(--brand-blue);
+}
+
+/* Notification unread badge */
+.dash-badge {
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 16px; height: 16px;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dark mode toggle */
+.dash-theme-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--bg-stat);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+}
+.dash-theme-btn:hover {
+  background: var(--brand-blue);
+  color: #fff;
+}
+
+/* =====================================================
+   DROPDOWN POPUP
+   Shared styles for both notification and profile popups.
+   Positioned absolutely below the icon button.
+   ===================================================== */
+.dash-popup-wrapper {
+  position: relative; /* anchor for the dropdown */
+}
+
+.dash-popup {
+  position: absolute;
+  top: calc(100% + 10px); /* 10px gap below icon */
+  right: 0;
+  width: 320px;
+  background: var(--bg-popup);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+
+  /* Hidden by default */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Small arrow pointing up to the icon */
+.dash-popup::before {
+  content: '';
+  position: absolute;
+  top: -6px; right: 14px;
+  width: 12px; height: 12px;
+  background: var(--bg-popup);
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+
+/* Open state */
+.dash-popup.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+/* Popup header */
+.dash-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.dash-popup-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Popup scrollable body */
+.dash-popup-body {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+/* Thin scrollbar */
+.dash-popup-body::-webkit-scrollbar { width: 4px; }
+.dash-popup-body::-webkit-scrollbar-track { background: transparent; }
+.dash-popup-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* =====================================================
+   NOTIFICATION POPUP ITEMS
+   ===================================================== */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--bg-stat); }
+
+/* Blue dot for unread */
+.notif-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.notif-dot.read { background: var(--border); }
+
+.notif-content { flex: 1; }
+.notif-message {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 0.2rem;
+}
+.notif-time {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+}
+
+.notif-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* =====================================================
+   PROFILE POPUP
+   ===================================================== */
+.profile-popup-avatar {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: var(--brand-grad);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto 0.5rem;
+}
+
+.profile-popup-name {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0 1.25rem;
+}
+
+.profile-popup-phone {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0.2rem 1.25rem 0.75rem;
+}
+
+.profile-popup-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0;
+}
+
+.profile-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.profile-info-row:last-of-type { border-bottom: none; }
+.profile-info-label { color: var(--text-muted); }
+.profile-info-value {
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+  max-width: 180px;
+  word-break: break-word;
+}
+
+/* Logout button inside profile popup */
+.profile-popup-logout {
+  width: calc(100% - 2.5rem);
+  margin: 0.75rem 1.25rem 1rem;
+  padding: 0.7rem;
+  border-radius: 50px;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.profile-popup-logout:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* =====================================================
+   MAIN CONTENT
+   ===================================================== */
+.dash-main {
+  margin-top: var(--navbar-height);
+  padding: 2rem;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Welcome */
+.dash-welcome { margin-bottom: 2rem; }
+.dash-welcome h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.dash-welcome p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* =====================================================
+   STATS ROW
+   ===================================================== */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.dash-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s, border-color 0.3s;
+}
+.dash-stat-card .stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+.dash-stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* =====================================================
+   COMPLAINTS SECTION
+   ===================================================== */
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.dash-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Filter tabs */
+.dash-filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+.dash-filter-tab {
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dash-filter-tab:hover,
+.dash-filter-tab.active {
+  background: var(--brand-blue);
+  color: #fff;
+  border-color: var(--brand-blue);
+}
+
+/* Cards grid */
+.dash-complaints-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+/* =====================================================
+   COMPLAINT CARD
+   ===================================================== */
+.complaint-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  cursor: pointer;
+}
+.complaint-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  background: var(--bg-card-hover);
+}
+
+/* Photo area */
+.complaint-card-photo {
+  width: 100%;
+  height: 130px;
+  background: var(--bg-stat);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  overflow: hidden;
+}
+.complaint-card-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+/* Card body */
+.complaint-card-body { padding: 1rem 1.25rem; }
+
+.complaint-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.complaint-id {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* Status badge */
+.status-badge {
+  padding: 0.22rem 0.7rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.status-badge.open        { background: var(--status-open-bg);        color: var(--status-open); }
+.status-badge.assigned    { background: var(--status-assigned-bg);    color: var(--status-assigned); }
+.status-badge.in-progress { background: var(--status-inprogress-bg);  color: var(--status-inprogress); }
+.status-badge.closed      { background: var(--status-closed-bg);      color: var(--status-closed); }
+
+.complaint-category {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.complaint-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  margin-bottom: 0.75rem;
+}
+.complaint-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+/* Progress bar */
+.complaint-progress {
+  height: 4px;
+  background: var(--bg-stat);
+  border-radius: 50px;
+  overflow: hidden;
+}
+.complaint-progress-fill {
+  height: 100%;
+  border-radius: 50px;
+  background: var(--brand-grad);
+  transition: width 0.4s ease;
+}
+
+/* Empty state */
+.dash-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+.dash-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media (max-width: 768px) {
+  .dash-main       { padding: 1.25rem; }
+  .dash-stats      { grid-template-columns: repeat(2, 1fr); }
+  .dash-navbar     { padding: 0 1.25rem; }
+  .dash-filter-tabs { display: none; }
+  .dash-popup      { width: 290px; }
+}
+@media (max-width: 480px) {
+  .dash-complaints-grid { grid-template-columns: 1fr; }
+  .dash-popup { width: calc(100vw - 2rem); right: -0.5rem; }
+}

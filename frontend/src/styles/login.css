@@ -1,0 +1,499 @@
+/* ---------- Google Font Import ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap');
+
+/* ---------- Design Tokens ---------- */
+:root {
+  /* Brand gradient — change these two stops to retheme the whole page */
+  --grad-top: #00c6fb;
+  --grad-bottom: #005bea;
+
+  /* Card */
+  --card-bg: rgba(255, 255, 255, 0.12);
+  --card-blur: 18px;
+  --card-border: rgba(255, 255, 255, 0.25);
+  --card-radius: 24px;
+  --card-padding: 2.5rem 2.75rem;
+  --card-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+
+  /* Input fields */
+  --input-bg: rgba(255, 255, 255, 0.92);
+  --input-radius: 50px;
+  --input-height: 52px;
+  --input-padding: 0 1.2rem 0 3rem;
+  --input-font: 0.95rem;
+  --input-color: #1a1a2e;
+  --input-placeholder: #888;
+  --input-focus-shadow: 0 0 0 3px rgba(0, 198, 251, 0.45);
+
+  /* Button */
+  --btn-bg: #1a1a2e;
+  --btn-hover-bg: #2d2d4e;
+  --btn-radius: 50px;
+  --btn-height: 52px;
+  --btn-font: 1rem;
+
+  /* Typography */
+  --font-family: 'Sora', sans-serif;
+  --name-size: 1.45rem;
+  --link-color: rgba(255, 255, 255, 0.82);
+  --link-hover: #ffffff;
+
+  /* Spacing scale */
+  --sp-xs: 0.5rem;
+  --sp-sm: 0.85rem;
+  --sp-md: 1.25rem;
+  --sp-lg: 1.75rem;
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none; /* prevents scroll bouncing past page content */
+}
+
+/* ---------- Full-Screen Background ---------- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* Blue gradient background */
+  background: linear-gradient(160deg, var(--grad-top) 0%, var(--grad-bottom) 100%);
+
+  /* Subtle tech circuit-board texture via SVG data URI */
+  background-image:
+    linear-gradient(160deg, var(--grad-top) 0%, var(--grad-bottom) 100%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg stroke='%23ffffff' stroke-width='0.4' stroke-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-blend-mode: normal, overlay;
+
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative blurred blobs for depth */
+.login-page::before,
+.login-page::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.login-page::before {
+  width: 420px;
+  height: 420px;
+  background: #00eaff;
+  top: -100px;
+  left: -120px;
+}
+.login-page::after {
+  width: 380px;
+  height: 380px;
+  background: #0040d0;
+  bottom: -80px;
+  right: -100px;
+}
+
+/* ---------- Glassmorphism Card ---------- */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--card-blur));
+  -webkit-backdrop-filter: blur(var(--card-blur));
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--card-shadow);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-md);
+
+  /* Subtle entry animation */
+  animation: cardFadeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Profile Section ---------- */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-xs);
+  padding-bottom: var(--sp-sm);
+}
+
+.profile-name {
+  color: #ffffff;
+  font-size: var(--name-size);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* Subtle glow on the name */
+  text-shadow: 0 2px 18px rgba(0, 198, 251, 0.55);
+}
+
+/* ---------- Form ---------- */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md); /* increased from sp-sm (0.85rem) to sp-md (1.25rem) */
+}
+
+/* ---------- Input Field Wrapper ---------- */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Left icon inside input */
+.input-icon {
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+/* The actual <input> element */
+.input-field {
+  width: 100%;
+  height: var(--input-height);
+  background: var(--input-bg);
+  border: 1.5px solid transparent;
+  border-radius: var(--input-radius);
+  padding: var(--input-padding);
+  font-family: var(--font-family);
+  font-size: var(--input-font);
+  color: var(--input-color);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-field::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* Focus state — blue ring */
+.input-field:focus {
+  border-color: var(--grad-top);
+  box-shadow: var(--input-focus-shadow);
+}
+
+/* When focused, tint the icon too */
+.input-wrapper:focus-within .input-icon {
+  color: var(--grad-bottom);
+}
+
+/* Right-side "Send OTP" button inside the phone field */
+.send-otp-btn {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, var(--grad-top), var(--grad-bottom));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 0.35rem 0.9rem;
+  font-family: var(--font-family);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.send-otp-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-50%) scale(1.04);
+}
+.send-otp-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Push text right so it doesn't overlap the Send OTP button */
+.input-field.has-action {
+  padding-right: 6.5rem;
+}
+
+/* OTP input — extra right padding for the eye toggle */
+.input-field.has-toggle {
+  padding-right: 3rem;
+}
+
+/* Show/Hide OTP toggle */
+.toggle-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.toggle-btn:hover { color: var(--grad-bottom); }
+
+/* ---------- Login Button ---------- */
+.login-btn {
+  width: 100%;
+  height: var(--btn-height);
+  background: var(--btn-bg);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--btn-radius);
+  font-family: var(--font-family);
+  font-size: var(--btn-font);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  margin-top: var(--sp-xs);
+  transition: background 0.25s, transform 0.15s, box-shadow 0.25s;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28);
+}
+.login-btn:hover {
+  background: var(--btn-hover-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.login-btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- Links ---------- */
+.bottom-link {
+  color: var(--link-color);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+}
+.bottom-link:hover { color: var(--link-hover); }
+
+/* "Municipality account →" — pinned at the bottom of the viewport.
+   Works for both <a> and <button> elements — browser button defaults
+   (background, border, padding) are all reset here. */
+.municipality-link {
+  position: relative;
+  margin-top: 1.5rem;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: fit-content;
+  background: none;
+  border: none;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.88rem;
+  font-family: var(--font-family);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+.municipality-link:hover {
+  color: #ffffff;
+}
+
+/* Validation error message */
+.error-msg {
+  color: #ffe0e0;
+  font-size: 0.78rem;
+  padding-left: 1.2rem;
+  margin-top: 0.3rem;   /* was -0.3rem — now pushes it away from the input */
+  margin-bottom: 0.2rem; /* adds breathing room before the next field */
+}
+
+/* ---------- Responsive Breakpoints ---------- */
+
+/* Tablet (≤ 768px) */
+@media (max-width: 768px) {
+  .login-card {
+    max-width: 380px;
+    padding: 2rem 2rem;
+  }
+  :root {
+    --name-size: 1.3rem;
+  }
+}
+
+/* Mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .login-card {
+    max-width: 100%;
+    padding: 1.8rem 1.5rem;
+    border-radius: 18px;
+  }
+  :root {
+    --input-height: 48px;
+    --btn-height: 48px;
+    --name-size: 1.2rem;
+  }
+}
+
+/* ── NEW: Register New Municipal Corporation button ────────────
+   Sits below the login card. Glassmorphism style to match the
+   card. Full-width on mobile, capped at 420px on desktop.
+   ──────────────────────────────────────────────────────────── */
+.register-corp-btn {
+  position: relative;
+  z-index: 1;
+  margin-top: 1.1rem;
+  width: 100%;
+  max-width: 420px;              /* matches card max-width */
+  height: var(--btn-height);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: var(--btn-radius);
+  font-family: var(--font-family);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  transition: background 0.25s, transform 0.15s, box-shadow 0.25s, border-color 0.2s;
+}
+.register-corp-btn:hover {
+  background: rgba(255, 255, 255, 0.26);
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.26);
+}
+.register-corp-btn:active { transform: translateY(0); }
+
+/* Responsive overrides for register button */
+@media (max-width: 768px) { .register-corp-btn { max-width: 380px; } }
+@media (max-width: 480px) { .register-corp-btn { max-width: 100%; } }
+
+/* ── Registration page — card overrides ────────────────────────
+   The reg-card has 7 fields so it needs:
+   • More vertical padding room
+   • Scrollable on short screens (justify-content: flex-start
+     so the card starts from the top, not floating mid-screen)
+   ──────────────────────────────────────────────────────────── */
+
+/* Make the page scrollable when card is taller than viewport */
+.login-page.reg-page {
+  justify-content: flex-start;
+  padding-top: 2.5rem;
+  padding-bottom: 5rem; /* room for the back link */
+}
+
+/* Wider card for the registration form */
+.reg-card {
+  max-width: 460px;
+}
+
+/* Subtitle under "Register" heading */
+.reg-subtitle {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: -0.6rem;
+  padding-bottom: 0.3rem;
+}
+
+@media (max-width: 768px) {
+  .reg-card { max-width: 380px; }
+}
+@media (max-width: 480px) {
+  .reg-card { max-width: 100%; }
+  .login-page.reg-page { padding-top: 1.5rem; }
+}
+/* ── Success card shown after municipality registration ── */
+.success-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--card-blur));
+  -webkit-backdrop-filter: blur(var(--card-blur));
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  padding: 2.5rem 2.75rem;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: center;
+  animation: cardFadeIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.success-title {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.success-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: -0.4rem;
+}
+
+.success-id {
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 0.6rem 1.4rem;
+  width: 100%;
+}
+
+.success-note {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+}
