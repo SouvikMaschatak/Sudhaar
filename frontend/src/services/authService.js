@@ -1,7 +1,7 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://sudhaar-backend.onrender.com';
 // ── Resident login ────────────────────────────────────────────
 export async function residentLogin(phone, password) {
-  const response = await fetch(`${BASE_URL}/resident/signin`, {
+const response = await fetch(`${BASE_URL}/api/resident/signin`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ phone, password }),
@@ -16,7 +16,7 @@ export async function residentLogin(phone, password) {
 
 // ── Municipality login ────────────────────────────────────────
 export async function municipalityLogin(municipalityId, password) {
-  const response = await fetch(`${BASE_URL}/municipality/signin`, {
+const response = await fetch(`${BASE_URL}/api/municipality/signin`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ municipalityId, password }),
@@ -31,7 +31,7 @@ export async function municipalityLogin(municipalityId, password) {
 
 // ── Municipality registration ─────────────────────────────────
 export async function municipalitySignup(formData) {
-  const response = await fetch(`${BASE_URL}/municipality/signup`, {
+  const response = await fetch(`${BASE_URL}/api/municipality/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData),
@@ -42,7 +42,7 @@ export async function municipalitySignup(formData) {
 
 // ── Resident registration ─────────────────────────────────────
 export async function residentSignup(phone, password, name, address) {
-  const response = await fetch(`${BASE_URL}/resident/signup`, {
+  const response = await fetch(`${BASE_URL}/api/resident/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ phone, password, name, address }),
