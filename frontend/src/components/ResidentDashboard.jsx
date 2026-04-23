@@ -59,9 +59,9 @@ export default function ResidentDashboard() {
         setLoading(true);
          // All three calls run in parallel for speed
         const [profileData, complaintsData, notificationsData] = await Promise.all([
-          authFetch(`/resident/profile/${phone}`),
-          authFetch(`/complaints/resident/${phone}`),
-          authFetch(`/notifications/resident/${phone}`),
+          authFetch(`/api/resident/profile/${phone}`),
+          authFetch(`/api/complaints/resident/${phone}`),
+          authFetch(`/api/notifications/resident/${phone}`),
         ]);
          setResident(profileData);
         setComplaints(complaintsData);
@@ -92,7 +92,7 @@ export default function ResidentDashboard() {
   // ── Mark notification as read ─────────────────────────────
   const handleMarkRead = async (id) => {
     try {
-      await authFetch(`/notifications/read/${id}`, { method: "PUT" });
+      await authFetch(`/api/notifications/read/${id}`, { method: "PUT" });
       setNotifications(prev =>
         prev.map(n => n.id === id ? { ...n, read: true } : n)
       );
