@@ -1,10 +1,10 @@
-//Main Spring Boot entrypoint, starts the app.
 package com.login.jwtoken.login_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {UserDetailsServiceAutoConfiguration.class})
 public class LoginApiApplication {
 
 	public static void main(String[] args) {
